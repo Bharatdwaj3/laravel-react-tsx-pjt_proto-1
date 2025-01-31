@@ -1,19 +1,53 @@
-import {createBrowserRouter} from 'react-router-dom'
-import Dashboard from '.Dashboard.tsx';
+import {createBrowserRouter,Navigate} from 'react-router-dom'
+import Dashboard from './Dashboard';
 import DefaultLayout from './components/DefaultLayout';
 import GuestLayout from './components/GuestLayout';
 import Login from './views/Login';
 import NotFound from './views/NotFound';
-import SignUp from './views/Signup';
+import SignUp from './views/SignUp';
 import Users from './views/Users';
-import UserForm from './views/UserForm';
-const router createBrowserRouter (routes[
-    path:'/',
-    element:<DefaultLayout/>,
-    children:[
-        {
+import UserForm from './views/UserFrom';
+
+const router =createBrowserRouter ([
+    {
             path:'/',
-            element:<Navigate to="/users"/>
-        }
-    ]
+            element:<DefaultLayout/>,
+            children:[
+            {
+                path:'/',
+                element:<Navigate to="/users"/>
+            },
+            {
+                path:'/dashboard',
+                element:<Dashboard/>
+            },
+            {
+                path:'/users',
+                element: <Users/>
+            },
+            {
+                path:'/users/:id',
+                element:<UserForm key="userUpdate"/>
+            }
+        ]},
+    {
+        path:'/',
+        element:<GuestLayout/>,
+        children=[
+            {
+                path:'/login',
+                element:<Login/>
+            },
+            {
+                path:'/signup',
+                element:<SignUp/>
+            }
+        ]
+    },
+    {
+        path:"*",
+        element:<NotFound/>
+    }
 ])
+
+export default router;

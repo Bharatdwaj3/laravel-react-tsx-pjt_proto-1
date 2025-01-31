@@ -1,9 +1,7 @@
-import React from 'react'
-
-type Props = {}
-
-const DefaultLayout = (props: Props) => {
+const DefaultLayout = () => {
   return (
     <div>DefaultLayout</div>
   )
 }
+
+export default DefaultLayout;
