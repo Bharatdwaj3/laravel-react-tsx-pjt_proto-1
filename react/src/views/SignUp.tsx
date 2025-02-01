@@ -1,11 +1,82 @@
-import React from 'react'
+import { Link } from "react-router-dom";
+import { useRef, useState, FormEvent } from "react";
+import axiosClient from "../axios-client.ts";
+import { useStateContext } from "../context/ContextProvider.tsx";
 
-type Props = {}
-
-const SignUp = (props: Props) => {
-  return (
-    <div>SignUp</div>
-  )
+interface Errors {
+  [key: string]: string[];
 }
 
-export default SignUp
+export default function SignUp() {
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const passwordConfirmationRef = useRef<HTMLInputElement>(null);
+
+  const { setUser, setToken } = useStateContext();
+  const [errors, setErrors] = useState<Errors | null>(null);
+
+  const onSubmit = (ev: FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+
+    if (
+      !nameRef.current ||
+      !emailRef.current ||
+      !passwordRef.current ||
+      !passwordConfirmationRef.current
+    ) {
+      return;
+    }
+
+    const payload = {
+      name: nameRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      password_confirmation: passwordConfirmationRef.current.value,
+    };
+
+    axiosClient
+      .post("/signup", payload)
+      .then(({ data }) => {
+        setUser(data.user);
+        setToken(data.token);
+      })
+      .catch((err) => {
+        const response = err.response;
+        if (response && response.status === 422) {
+          setErrors(response.data.errors);
+        }
+      });
+  };
+
+  return (
+    <>
+      <div className="login-signup-form animated fadeInDown">
+        <div className="form">
+          <form onSubmit={onSubmit}>
+            <h1 className="title">Signup for Free</h1>
+            {errors && (
+              <div className="alert">
+                {Object.keys(errors).map((key) => (
+                  <p key={key}>{errors[key][0]}</p>
+                ))}
+              </div>
+            )}
+            <input ref={nameRef} type="text" placeholder="Full Name" />
+            <input ref={emailRef} type="email" placeholder="Email Address" />
+            <input ref={passwordRef} type="password" placeholder="Password" />
+            <input
+              ref={passwordConfirmationRef}
+              type="password"
+              placeholder="Repeat Password"
+            />
+            <button className="btn btn-block">Signup</button>
+            <p className="message">
+              Already registered? <Link to="/login">Sign In</Link>
+            </p>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+}

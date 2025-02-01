@@ -1,11 +1,19 @@
-import React from 'react'
+import {Navigate,Outlet} from 'react-router-dom';
+import {useStateContext} from "../context/ContextProvider";
 
-type Props = {}
 
-const GuestLayout = (props: Props) => {
+const GuestLayout = () => {
+  const {user,token}=useStateContext();
+  if(token){
+    return <Navigate to="/" />;
+  }
   return (
-    <div>GuestLayout</div>
-  )
+    <>
+      <div id='guestLayout'>
+        <Outlet/>
+      </div>
+    </>
+  );
 }
 
 export default GuestLayout

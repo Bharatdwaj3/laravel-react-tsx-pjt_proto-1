@@ -1,11 +1,7 @@
-import React from 'react'
-
-type Props = {}
-
-const 4 = (props: Props) => {
+export default function NotFound () {
   return (
-    <div>4</div>
+  <>
+    <h1>Page Not Found</h1>
+  </>
   )
 }
-
-export default 4
